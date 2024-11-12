@@ -10,7 +10,6 @@ import UIKit
 class RegisterViewController: UIViewController {
 
     let registerView = RegisterView()
-    let chatListViewController = ChatListViewController()
     
     override func loadView() {
         view = registerView
@@ -24,8 +23,8 @@ class RegisterViewController: UIViewController {
     }
     
     @objc func onButtonRegisterTapped() {
-        // TODO: validate text inputs
-        
+        registerNewAccount()
+        let chatListViewController = ChatListViewController()
         navigationController?.pushViewController(chatListViewController, animated: true)
     }
 }

@@ -60,6 +60,7 @@ class RegisterView: UIView {
     func setuptextFieldEmail() {
         textFieldEmail = UITextField()
         textFieldEmail.textAlignment = .center
+        textFieldEmail.autocapitalizationType = .none
         textFieldEmail.borderStyle = .roundedRect
         textFieldEmail.placeholder = "Enter Email"
         textFieldEmail.translatesAutoresizingMaskIntoConstraints = false
@@ -75,6 +76,8 @@ class RegisterView: UIView {
     
     func setupTextFieldPassword() {
         textFieldPassword = UITextField()
+        textFieldPassword.textContentType = .password
+        textFieldPassword.isSecureTextEntry = true
         textFieldPassword.textAlignment = .center
         textFieldPassword.borderStyle = .roundedRect
         textFieldPassword.placeholder = "Enter Password"
@@ -91,6 +94,8 @@ class RegisterView: UIView {
     
     func setupTextFieldConfirmPassword() {
         textFieldConfirmPassword = UITextField()
+        textFieldConfirmPassword.textContentType = .password
+        textFieldConfirmPassword.isSecureTextEntry = true
         textFieldConfirmPassword.textAlignment = .center
         textFieldConfirmPassword.borderStyle = .roundedRect
         textFieldConfirmPassword.placeholder = "Enter Password"
