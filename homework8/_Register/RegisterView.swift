@@ -43,6 +43,7 @@ class RegisterView: UIView {
     
     func setupTextFieldName() {
         textFieldName = UITextField()
+        textFieldName.textContentType = .name
         textFieldName.textAlignment = .center
         textFieldName.placeholder = "Enter your name"
         textFieldName.borderStyle = .roundedRect
@@ -59,6 +60,7 @@ class RegisterView: UIView {
     
     func setuptextFieldEmail() {
         textFieldEmail = UITextField()
+        textFieldEmail.textContentType = .emailAddress
         textFieldEmail.textAlignment = .center
         textFieldEmail.autocapitalizationType = .none
         textFieldEmail.borderStyle = .roundedRect
