@@ -62,6 +62,7 @@ class RegisterView: UIView {
         textFieldEmail = UITextField()
         textFieldEmail.textContentType = .emailAddress
         textFieldEmail.textAlignment = .center
+        textFieldEmail.autocapitalizationType = .none
         textFieldEmail.borderStyle = .roundedRect
         textFieldEmail.placeholder = "Enter Email"
         textFieldEmail.translatesAutoresizingMaskIntoConstraints = false
