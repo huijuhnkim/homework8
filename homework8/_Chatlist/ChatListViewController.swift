@@ -9,7 +9,14 @@ import UIKit
 
 class ChatListViewController: UIViewController {
 
+    let chatlistView = ChatListView()
+    
+    override func loadView() {
+        view = chatlistView
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+
     }
 }

@@ -8,13 +8,32 @@
 import UIKit
 
 class ChatListView: UIView {
-
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
+    
+    var label: UILabel!
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.backgroundColor = .white
+        
+        setup()
+        initConstraints()
     }
-    */
-
+    
+    func setup() {
+        label = UILabel()
+        label.text = "Chat List"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(label)
+    }
+    
+    func initConstraints() {
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            label.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+        ])
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
