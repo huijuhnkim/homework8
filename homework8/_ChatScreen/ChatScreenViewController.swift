@@ -44,7 +44,7 @@ class ChatScreenViewController: UIViewController {
     }
 
 }
-
+// need to implement scroll to bottom and displaying time and date**
 extension ChatScreenViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return userMessages.count
