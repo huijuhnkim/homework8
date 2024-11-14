@@ -22,12 +22,21 @@ extension ChatListViewController: UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        /**
         tableView.deselectRow(at: indexPath, animated: true)
         let username = chatList[indexPath.row].name
         
         let chatController = ChatScreenViewController()
         // chatController.username = username
         
-        navigationController?.pushViewController(chatController, animated: true)
+        navigationController?.pushViewController(chatController, animated: true) */
+        
+        // select the user to send messages to
+        tableView.deselectRow(at: indexPath, animated: true)
+        let recipientName = chatList[indexPath.row].name
+        
+        let chatController = ChatScreenViewController()
+        chatController.recipientName = recipientName
+        navigationController?.pushViewController(chatController, animated: true) 
     }
 }

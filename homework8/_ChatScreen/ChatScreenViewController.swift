@@ -7,6 +7,7 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseFirestore
 
 class ChatScreenViewController: UIViewController {
     
@@ -14,6 +15,10 @@ class ChatScreenViewController: UIViewController {
     
     var userMessages = [Message]()
     var currentUser:FirebaseAuth.User?
+    let database = Firestore.firestore()
+    
+    var recipientName: String?
+    var chatID: String?
     
     override func loadView(){
         view = chatScreen
@@ -26,6 +31,14 @@ class ChatScreenViewController: UIViewController {
         chatScreen.tableViewMessages.delegate = self
         chatScreen.tableViewMessages.separatorStyle = .none
         
+        // create chat ID
+        createChatID()
+        
+        // get all messages
+        getMessages()
+        
+        // send button action
+        chatScreen.buttonSend.addTarget(self, action: #selector(onSendButtonTapped), for: .touchUpInside)
         
         // press "My Chats" button on top left to go back to chat list
         let backButton = UIBarButtonItem(
@@ -42,25 +55,92 @@ class ChatScreenViewController: UIViewController {
         let chatListScreen = ChatListViewController()
         navigationController?.pushViewController(chatListScreen, animated: true)
     }
-
-}
-// need to implement scroll to bottom and displaying time and date**
-extension ChatScreenViewController: UITableViewDelegate, UITableViewDataSource{
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return userMessages.count
+    
+    // create chat ID by combining sender's and recipient's name
+    func createChatID(){
+        guard let currentUserName = currentUser?.displayName, let recipientName = recipientName else {
+            return
+        }
+        
+        let currentChatID = currentUserName + recipientName
+        
+        chatID = currentChatID
+    
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // checks if message is user's message
-        // sets user's message to light blue and friend's to light gray
-        let message = userMessages[indexPath.row]
-        let userMessage = message.name == currentUser?.displayName
+    func getMessages(){
+        // date and time formatter
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .short
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "messages", for: indexPath) as! MessagesTableViewCell
-        cell.contentView.backgroundColor = userMessage ? UIColor.systemBlue.withAlphaComponent(0.3) : UIColor.lightGray.withAlphaComponent(0.3)
-        cell.labelText.text = message.text
+        guard let chatID = chatID else {
+            return
+        }
         
-        return cell
+        self.database.collection("users")
+            .document((self.currentUser?.email)!)
+            .collection("chats")
+            .document(chatID)
+            .collection("messages")
+            .addSnapshotListener(includeMetadataChanges: false, listener: {querySnapshot, error in
+                if let documents = querySnapshot?.documents{
+                    self.userMessages = documents.map { document in
+                        let data = document.data()
+                        let name = data["name"] as? String ?? ""
+                        let text = data["text"] as? String ?? ""
+                        let timestamp = (data["dateAndTime"] as? Timestamp)?.dateValue() ?? Date()
+                        let dateAndTime = dateFormatter.string(from: timestamp)
+                                  
+                        return Message(name: name, text: text, dateAndTime: dateAndTime)
+                    }
+                    self.chatScreen.tableViewMessages.reloadData()
+                    self.scrollToBottom()
+                }
+            })
     }
     
+    @objc func onSendButtonTapped(){
+        guard let chatID = chatID else {return}
+        guard let text = chatScreen.textFieldMessage.text else { return  }
+    
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .short
+        let dateAndTime = dateFormatter.string(from: Date())
+        
+        // get current user's name
+        let senderName = currentUser?.displayName ?? "No Name"
+        
+        // create message object with sender's name, text and date and time
+        let message = Message(name: senderName, text: text, dateAndTime: dateAndTime)
+        
+        // add to messages collection
+        let collectionMessages =
+        self.database.collection("users")
+            .document((self.currentUser?.email)!)
+            .collection("chats")
+            .document(chatID)
+            .collection("messages")
+        
+        do{
+            try collectionMessages.addDocument(from: message, completion: {(error) in
+                if error == nil{
+                    self.scrollToBottom()
+                }
+            })
+        }
+        catch {
+            print("Error sending message!")
+        }
+    }
+    
+    // scroll to bottom of the chat
+    func scrollToBottom(){
+        if userMessages.count > 0 {
+            let lastMessageRowIndex = IndexPath(row: userMessages.count - 1, section: 0)
+            chatScreen.tableViewMessages.scrollToRow(at: lastMessageRowIndex, at: .bottom, animated: false )
+        }
+    }
+                    
 }
