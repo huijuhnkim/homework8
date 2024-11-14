@@ -12,7 +12,8 @@ import FirebaseAuth
 extension RegisterViewController{
     
     func registerNewAccount(){
-        //MARK: create a Firebase user with email and password...
+        showActivityIndicator()
+        
         if let name = registerView.textFieldName.text,
            let email = registerView.textFieldEmail.text,
            let password = registerView.textFieldPassword.text,
@@ -36,10 +37,9 @@ extension RegisterViewController{
             
             Auth.auth().createUser(withEmail: email, password: password, completion: {result, error in
                 if error == nil{
-                    //MARK: the user creation is successful...
+                    self.hideActivityIndicator()
                     self.setNameOfTheUserInFirebaseAuth(name: name)
-                }else{
-                    //MARK: there is a error creating the user...
+                } else {
                     print(error as Any)
                 }
             })

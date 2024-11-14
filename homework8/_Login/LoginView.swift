@@ -36,6 +36,8 @@ class LoginView: UIView {
     
     func setuptextFieldEmail() {
         textFieldEmail = UITextField()
+        textFieldEmail.textContentType = .emailAddress
+        textFieldEmail.autocapitalizationType = .none
         textFieldEmail.textAlignment = .center
         textFieldEmail.borderStyle = .roundedRect
         textFieldEmail.placeholder = "Enter Email"
@@ -52,6 +54,8 @@ class LoginView: UIView {
     
     func setupTextFieldPassword() {
         textFieldPassword = UITextField()
+        textFieldPassword.textContentType = .password
+        textFieldPassword.autocapitalizationType = .none
         textFieldPassword.textAlignment = .center
         textFieldPassword.borderStyle = .roundedRect
         textFieldPassword.placeholder = "Enter Password"
