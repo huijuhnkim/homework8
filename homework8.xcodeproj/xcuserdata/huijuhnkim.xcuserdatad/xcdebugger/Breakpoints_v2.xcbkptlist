@@ -72,7 +72,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "0250ED95-B49A-40BA-A916-7B33BF4B477E"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "homework8/_Login/ViewController.swift"
@@ -82,6 +82,36 @@
             endingLineNumber = "91"
             landmarkName = "onButtonLoginTapped()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "0250ED95-B49A-40BA-A916-7B33BF4B477E - a06b3d3fc50835f4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;FirebaseAuth.AuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in homework8.ViewController.onButtonLoginTapped() -&gt; ()"
+                  moduleName = "homework8.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/huijuhnkim/Documents/1_Northeastern/2024SU/CS5520/homework8/homework8/_Login/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "90"
+                  endingLineNumber = "90">
+               </Location>
+               <Location
+                  uuid = "0250ED95-B49A-40BA-A916-7B33BF4B477E - a06b3d3fc50835d3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;FirebaseAuth.AuthDataResult&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in homework8.ViewController.onButtonLoginTapped() -&gt; ()"
+                  moduleName = "homework8.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/huijuhnkim/Documents/1_Northeastern/2024SU/CS5520/homework8/homework8/_Login/ViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "91"
+                  endingLineNumber = "91">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
