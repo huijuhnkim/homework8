@@ -11,7 +11,6 @@ import FirebaseAuth
 import FirebaseFirestore
 
 class ChatListViewController: UIViewController {
-
     let chatListScreen = ChatListView()
     
     var chatList = [Message]()
@@ -77,10 +76,6 @@ class ChatListViewController: UIViewController {
                 
             }
         }
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
         
         title = "Chats"
         
