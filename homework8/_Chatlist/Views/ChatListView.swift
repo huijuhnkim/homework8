@@ -56,10 +56,6 @@ class ChatListView: UIView {
     //MARK: setting up constraints...
     func initConstraints(){
         NSLayoutConstraint.activate([
-//            profilePic.widthAnchor.constraint(equalToConstant: 32),
-//            profilePic.heightAnchor.constraint(equalToConstant: 32),
-//            profilePic.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 8),
-//            profilePic.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             
             labelText.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 8),
             labelText.bottomAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 40),
