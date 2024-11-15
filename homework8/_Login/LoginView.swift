@@ -55,6 +55,7 @@ class LoginView: UIView {
     func setupTextFieldPassword() {
         textFieldPassword = UITextField()
         textFieldPassword.textContentType = .password
+        textFieldPassword.isSecureTextEntry = true
         textFieldPassword.autocapitalizationType = .none
         textFieldPassword.textAlignment = .center
         textFieldPassword.borderStyle = .roundedRect
@@ -66,6 +67,7 @@ class LoginView: UIView {
     func setupButtonLogin() {
         buttonLogin = UIButton(type: .system)
         buttonLogin.setTitle("Login", for: .normal)
+        buttonLogin.titleLabel?.font = UIFont.systemFont(ofSize: 22)
         buttonLogin.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(buttonLogin)
     }

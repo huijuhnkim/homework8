@@ -11,6 +11,7 @@ class RegisterViewController: UIViewController {
 
     let registerView = RegisterView()
     let childProgressView = ProgressSpinnerViewController()
+    let notificationCenter = NotificationCenter.default
     
     override func loadView() {
         view = registerView
@@ -25,8 +26,9 @@ class RegisterViewController: UIViewController {
     
     @objc func onButtonRegisterTapped() {
         registerNewAccount()
-        let chatListViewController = ChatListViewController()
-        navigationController?.pushViewController(chatListViewController, animated: true)
+//        let chatListViewController = ChatListViewController()
+//        navigationController?.pushViewController(chatListViewController, animated: true)
+        
     }
     
 }

@@ -81,8 +81,16 @@ extension RegisterViewController{
                 self.displayAlert(title: "Profile Update Error", message: error.localizedDescription)
                 self.hideActivityIndicator()
             } else {
-                print("jump to chat list")
-                self.navigationController?.popViewController(animated: true)
+                print("jump to chat list from register")
+                if let viewControllers = self.navigationController?.viewControllers {
+                    for viewController in viewControllers {
+                        if let mainVC = viewController as? ViewController {
+                            self.navigationController?.popToViewController(mainVC, animated: true)
+                            break
+                        }
+                    }
+                }
+                // self.navigationController?.popViewController(animated: true)
             }
         }
     }

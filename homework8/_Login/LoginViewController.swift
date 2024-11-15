@@ -1,14 +1,14 @@
 //
-//  ViewController.swift
+//  LoginViewController.swift
 //  homework8
 //
-//  Created by Hui Juhn Kim on 11/11/24.
+//  Created by Charles Yang on 11/15/24.
 //
 
 import UIKit
 import FirebaseAuth
 
-class ViewController: UIViewController {
+class LoginViewController: UIViewController {
 
     let loginView = LoginView()
     let chatListView = ChatListView()
@@ -34,11 +34,12 @@ class ViewController: UIViewController {
     }
     
     override func loadView() {
-        if currentUser == nil {
-            view = loginView
-        } else {
-            view = chatListView
-        }
+        view = loginView
+//        if currentUser == nil {
+//            view = loginView
+//        } else {
+//            view = chatListView
+//        }
     }
     
     override func viewDidLoad() {
@@ -49,7 +50,7 @@ class ViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person.crop.circle.badge.plus"), style: .plain, target: self, action: #selector(onButtonRegisterTapped))
         
         // sign in button
-        loginView.buttonLogin.addTarget(self, action: #selector(onButtonLoginTapped), for: .touchUpInside)  
+        loginView.buttonLogin.addTarget(self, action: #selector(onButtonLoginTapped), for: .touchUpInside)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -88,11 +89,11 @@ class ViewController: UIViewController {
                 } else {
                     print("User signed in successfully.")
                     self.currentUser = authResult!.user
-                    let chatListViewController = ChatListViewController()
-                    self.navigationController?.pushViewController(chatListViewController, animated: true)
+//                    let chatListViewController = ChatListViewController()
+//                    self.navigationController?.pushViewController(chatListViewController, animated: true)
+                    self.navigationController?.popViewController(animated: true)
                 }
             }
         }
     }
 }
-

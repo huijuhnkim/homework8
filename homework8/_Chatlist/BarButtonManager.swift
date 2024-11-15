@@ -8,7 +8,7 @@
 import UIKit
 import FirebaseAuth
 
-extension ChatListViewController{
+extension ViewController{
     func setupLeftBarButton(isLoggedin: Bool){
         if isLoggedin{
             //MARK: user is logged in...

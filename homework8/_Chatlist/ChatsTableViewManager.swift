@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-extension ChatListViewController: UITableViewDelegate, UITableViewDataSource{
+extension ViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return chatList.count
     }
