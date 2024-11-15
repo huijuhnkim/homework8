@@ -24,9 +24,10 @@ class ChatScreenViewController: UIViewController {
         view = chatScreen
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        currentUser = Auth.auth().currentUser
+
         chatScreen.tableViewMessages.dataSource = self
         chatScreen.tableViewMessages.delegate = self
         chatScreen.tableViewMessages.separatorStyle = .none
@@ -62,9 +63,8 @@ class ChatScreenViewController: UIViewController {
             return
         }
         
-        let currentChatID = currentUserName + recipientName
-        
-        chatID = currentChatID
+        let currentChatID = [currentUserName, recipientName].sorted()
+        chatID = currentChatID.joined()
     
     }
     
@@ -75,8 +75,10 @@ class ChatScreenViewController: UIViewController {
         dateFormatter.timeStyle = .short
         
         guard let chatID = chatID else {
+            print("Error: Chat ID is nil.")
             return
         }
+    
         
         self.database.collection("users")
             .document((self.currentUser?.email)!)
@@ -85,14 +87,16 @@ class ChatScreenViewController: UIViewController {
             .collection("messages")
             .addSnapshotListener(includeMetadataChanges: false, listener: {querySnapshot, error in
                 if let documents = querySnapshot?.documents{
-                    self.userMessages = documents.map { document in
-                        let data = document.data()
-                        let name = data["name"] as? String ?? ""
-                        let text = data["text"] as? String ?? ""
-                        let timestamp = (data["dateAndTime"] as? Timestamp)?.dateValue() ?? Date()
-                        let dateAndTime = dateFormatter.string(from: timestamp)
-                                  
-                        return Message(name: name, text: text, dateAndTime: dateAndTime)
+    
+                    self.userMessages.removeAll()
+                    for document in documents{
+                        do{
+                            let message = try document.data(as: Message.self)
+                            self.userMessages.append(message)
+                        }
+                        catch{
+                            print(error)
+                        }
                     }
                     self.chatScreen.tableViewMessages.reloadData()
                     self.scrollToBottom()
@@ -101,9 +105,19 @@ class ChatScreenViewController: UIViewController {
     }
     
     @objc func onSendButtonTapped(){
-        guard let chatID = chatID else {return}
-        guard let text = chatScreen.textFieldMessage.text else { return  }
+        guard let currentUserName = currentUser?.displayName, let recipientName = recipientName else {
+            return
+        }
+        
+        createChatID()
+        
+        guard let chatID = chatID else {
+            print("Error: Chat ID is nil.")
+            return
+        }
     
+        guard let text = chatScreen.textFieldMessage.text else { return  }
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
         dateFormatter.timeStyle = .short
@@ -126,7 +140,13 @@ class ChatScreenViewController: UIViewController {
         do{
             try collectionMessages.addDocument(from: message, completion: {(error) in
                 if error == nil{
+                    print("Message sent successfully.")
+                    print(chatID)
                     self.scrollToBottom()
+                    self.chatScreen.textFieldMessage.text = ""
+                }
+                else{
+                    print("Error adding document:")
                 }
             })
         }
