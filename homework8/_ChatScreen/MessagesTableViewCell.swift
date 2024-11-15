@@ -36,25 +36,26 @@ class MessagesTableViewCell: UITableViewCell {
         wrapperCellView.layer.shadowOpacity = 0.7
         wrapperCellView.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(wrapperCellView)
+     
     }
     
     func setupLabelName(){
         labelName = UILabel()
-        labelName.font = UIFont.boldSystemFont(ofSize: 15)
+        labelName.font = UIFont.boldSystemFont(ofSize: 13)
         labelName.translatesAutoresizingMaskIntoConstraints = false
         wrapperCellView.addSubview(labelName)
     }
     
     func setupLabelText(){
         labelText = UILabel()
-        labelText.font = UIFont.boldSystemFont(ofSize: 15)
+        labelText.font = UIFont.boldSystemFont(ofSize: 17)
         labelText.translatesAutoresizingMaskIntoConstraints = false
         wrapperCellView.addSubview(labelText)
     }
     
     func setupLabelDateAndTime(){
         labelDateAndTime = UILabel()
-        labelDateAndTime.font = UIFont.boldSystemFont(ofSize: 15)
+        labelDateAndTime.font = UIFont.boldSystemFont(ofSize: 11)
         labelDateAndTime.translatesAutoresizingMaskIntoConstraints = false
         wrapperCellView.addSubview(labelDateAndTime)
     }
@@ -71,17 +72,17 @@ class MessagesTableViewCell: UITableViewCell {
             labelName.heightAnchor.constraint(equalToConstant: 16),
             labelName.widthAnchor.constraint(equalTo: wrapperCellView.widthAnchor),
             
-            labelText.topAnchor.constraint(equalTo: labelName.topAnchor, constant: 3),
+            labelText.topAnchor.constraint(equalTo: labelName.bottomAnchor, constant: 8),
             labelText.leadingAnchor.constraint(equalTo: labelName.leadingAnchor),
             labelText.heightAnchor.constraint(equalToConstant: 20),
             labelText.widthAnchor.constraint(equalTo: labelName.widthAnchor),
             
-            labelDateAndTime.topAnchor.constraint(equalTo: labelText.topAnchor, constant: 3),
+            labelDateAndTime.topAnchor.constraint(equalTo: labelText.bottomAnchor, constant: 8),
             labelDateAndTime.leadingAnchor.constraint(equalTo: labelText.leadingAnchor),
             labelDateAndTime.heightAnchor.constraint(equalToConstant: 16),
             labelDateAndTime.widthAnchor.constraint(equalTo: labelText.widthAnchor),
             
-            wrapperCellView.heightAnchor.constraint(equalToConstant: 52),
+            wrapperCellView.heightAnchor.constraint(equalToConstant: 80),
         
         ])
     }

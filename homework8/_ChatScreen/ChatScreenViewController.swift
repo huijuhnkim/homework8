@@ -32,6 +32,8 @@ class ChatScreenViewController: UIViewController {
         chatScreen.tableViewMessages.delegate = self
         chatScreen.tableViewMessages.separatorStyle = .none
         
+        chatScreen.labelRecipientName.text = recipientName
+        
         // create chat ID
         createChatID()
         
@@ -75,16 +77,14 @@ class ChatScreenViewController: UIViewController {
         dateFormatter.timeStyle = .short
         
         guard let chatID = chatID else {
-            print("Error: Chat ID is nil.")
+            print("Chat ID does not exist.")
             return
         }
     
-        
-        self.database.collection("users")
-            .document((self.currentUser?.email)!)
-            .collection("chats")
+        self.database.collection("chats")
             .document(chatID)
             .collection("messages")
+            .order(by: "dateAndTime", descending: false) // make sure that the messages sent are in order
             .addSnapshotListener(includeMetadataChanges: false, listener: {querySnapshot, error in
                 if let documents = querySnapshot?.documents{
     
@@ -105,10 +105,6 @@ class ChatScreenViewController: UIViewController {
     }
     
     @objc func onSendButtonTapped(){
-        guard let currentUserName = currentUser?.displayName, let recipientName = recipientName else {
-            return
-        }
-        
         createChatID()
         
         guard let chatID = chatID else {
@@ -131,17 +127,16 @@ class ChatScreenViewController: UIViewController {
         
         // add to messages collection
         let collectionMessages =
-        self.database.collection("users")
-            .document((self.currentUser?.email)!)
-            .collection("chats")
+        self.database.collection("chats")
             .document(chatID)
             .collection("messages")
+
+           
         
         do{
             try collectionMessages.addDocument(from: message, completion: {(error) in
                 if error == nil{
                     print("Message sent successfully.")
-                    print(chatID)
                     self.scrollToBottom()
                     self.chatScreen.textFieldMessage.text = ""
                 }

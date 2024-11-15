@@ -31,8 +31,7 @@ class ChatScreenView: UIView {
     func setupLabelRecipientName(){
         labelRecipientName = UILabel()
         labelRecipientName.textAlignment = .center
-        // testing placement: labelRecipientName.text = "User 1"
-        labelRecipientName.font = UIFont.boldSystemFont(ofSize: 22)
+        labelRecipientName.font = UIFont.boldSystemFont(ofSize: 25)
         labelRecipientName.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(labelRecipientName)
     }

@@ -20,8 +20,11 @@ extension ChatScreenViewController: UITableViewDelegate, UITableViewDataSource{
         let userMessage = message.name == currentUser?.displayName
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "messages", for: indexPath) as! MessagesTableViewCell
-        cell.contentView.backgroundColor = userMessage ? UIColor.systemBlue.withAlphaComponent(0.5) : UIColor.lightGray.withAlphaComponent(0.3)
+        cell.wrapperCellView.backgroundColor = userMessage ? UIColor.systemBlue.withAlphaComponent(0.4) : UIColor.lightGray.withAlphaComponent(0.3)
+        
+        cell.labelName.text = message.name
         cell.labelText.text = message.text
+        cell.labelDateAndTime.text = message.dateAndTime
         
         return cell
     }
