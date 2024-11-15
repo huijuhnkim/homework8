@@ -22,17 +22,17 @@ extension RegisterViewController{
 
             // input validations
             if name.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty {
-                displayAlert(viewController: self, title: "Empty Fields", message: "There are empty fields. Please fill in all fields.")
+                displayAlert(title: "Empty Fields", message: "There are empty fields. Please fill in all fields.")
                 return
             }
             
             if !isValidEmail(email: email) {
-                displayAlert(viewController: self, title: "Invalid Email", message: "Email should be in proper format.")
+                displayAlert(title: "Invalid Email", message: "Email should be in proper format.")
                 return
             }
             
             if password != confirmPassword {
-                displayAlert(viewController: self, title: "Password Mismatch", message: "Password does not match.")
+                displayAlert(title: "Password Mismatch", message: "Password does not match.")
                 return
             }
             
@@ -47,9 +47,10 @@ extension RegisterViewController{
 //            })
             Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
                 if let error = error {
-                    // self.displayAlert(viewController: self, title: "Registration Error", message: error.localizedDescription)
+                    self.displayAlert(title: "Registration Error", message: error.localizedDescription)
                     self.hideActivityIndicator()
                 } else if let user = authResult?.user {
+                    print("add user to fire store")
                     self.addUserToFirestore(user: user, name: name, email: email)
                 }
             }
@@ -63,9 +64,10 @@ extension RegisterViewController{
             "email": email,
         ]) { error in
             if let error = error {
-                // self.displayAlert(viewController: self, title: "Firestore Error", message: error.localizedDescription)
+                self.displayAlert(title: "Firestore Error", message: error.localizedDescription)
                 self.hideActivityIndicator()
             } else {
+                print("set name of the user in firebase auth")
                 self.setNameOfTheUserInFirebaseAuth(name: name, user: user)
             }
         }
@@ -76,12 +78,20 @@ extension RegisterViewController{
         changeRequest.displayName = name
         changeRequest.commitChanges { error in
             if let error = error {
-                // self.displayAlert(viewController: self, title: "Profile Update Error", message: error.localizedDescription)
+                self.displayAlert(title: "Profile Update Error", message: error.localizedDescription)
                 self.hideActivityIndicator()
             } else {
+                print("jump to chat list")
                 self.navigationController?.popViewController(animated: true)
             }
         }
+    }
+    
+    func displayAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        self.present(alertController, animated: true, completion: nil)
     }
     
     //MARK: We set the name of the user after we create the account...

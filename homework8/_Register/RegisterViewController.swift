@@ -28,4 +28,5 @@ class RegisterViewController: UIViewController {
         let chatListViewController = ChatListViewController()
         navigationController?.pushViewController(chatListViewController, animated: true)
     }
+    
 }
