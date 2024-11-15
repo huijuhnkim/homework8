@@ -106,8 +106,9 @@ class ChatListViewController: UIViewController {
     }
     
     @objc func addChatButtonTapped(){
-//        let addChatController = AddChatViewController()
-//        addChatController.currentUser = self.currentUser
-//        navigationController?.pushViewController(addChatController, animated: true)
+        let addChatController = AddChatViewController()
+        addChatController.currentUser = self.currentUser
+        print("start new chat")
+        navigationController?.pushViewController(addChatController, animated: true)
     }
 }

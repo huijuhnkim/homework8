@@ -122,8 +122,8 @@ extension ChatListViewController{
             
             let profileAlert = UIAlertController(title: "User Profile", message: nil, preferredStyle: .alert)
             let username = user.displayName ?? "Unknown"
-            let useremail = user.email
-            let message = "Username: \(username)\nUser Email: \(useremail)"
+            let useremail = user.email ?? "Unknown"
+            let message = "UserName: \(username)\n UserEmail: \(useremail)"
             profileAlert.message = message
             
             profileAlert.addAction(UIAlertAction(title: "Close", style: .cancel, handler: nil))

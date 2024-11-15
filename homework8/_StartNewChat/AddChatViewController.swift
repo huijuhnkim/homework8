@@ -28,26 +28,31 @@ class AddChatViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        //MARK: handling if the Authentication state is changed (sign in, sign out, register)...
-        handleAuth = Auth.auth().addStateDidChangeListener { auth, user in
+        handleAuth = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
+            guard let self = self else { return }
             self.currentUser = user
-            self.database.collection("users").addSnapshotListener(includeMetadataChanges: false, listener: { querySnapshot, error in
-                if let error = error {
-                    print("Error getting documents: \(error)")
-                } else {
-                    self.userList.removeAll()
-                    for document in querySnapshot!.documents {
-                        do {
-                            let user = try document.data(as: User.self)
-                            self.userList.append(user)
-                        } catch {
-                            print("Error decoding user: \(error)")
+            
+            if let currentUser = user {
+                self.database.collection("users").addSnapshotListener { querySnapshot, error in
+                    if let error = error {
+                        print("Error getting documents: \(error)")
+                    } else {
+                        self.userList.removeAll()
+                        for document in querySnapshot!.documents {
+                            if document.documentID != currentUser.uid {  // 排除当前用户
+                                do {
+                                    let user = try document.data(as: User.self)
+                                    self.userList.append(user)
+                                } catch {
+                                    print("Error decoding user: \(error)")
+                                }
+                            }
                         }
+                        self.userList.sort(by: { $0.name < $1.name })
+                        self.addChatScreen.tableViewUsers.reloadData()
                     }
-                    self.userList.sort(by: { $0.name < $1.name })
-                    self.addChatScreen.tableViewUsers.reloadData()
                 }
-            })
+            }
         }
         
         title = "Start New Chat"
@@ -61,7 +66,6 @@ class AddChatViewController: UIViewController {
         
         //MARK: Make the titles look large...
         navigationController?.navigationBar.prefersLargeTitles = true
-        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
