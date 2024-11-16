@@ -17,7 +17,7 @@ class ChatScreenViewController: UIViewController {
     var currentUser:FirebaseAuth.User?
     let database = Firestore.firestore()
     
-    var recipientName: String?
+    var recipient: User?
     var chatID: String?
     
     override func loadView(){
@@ -32,7 +32,7 @@ class ChatScreenViewController: UIViewController {
         chatScreen.tableViewMessages.delegate = self
         chatScreen.tableViewMessages.separatorStyle = .none
         
-        chatScreen.labelRecipientName.text = recipientName
+        chatScreen.labelRecipientName.text = recipient?.name
         
         // create chat ID
         createChatID()
@@ -55,31 +55,33 @@ class ChatScreenViewController: UIViewController {
     }
     
     @objc func onBackButtonTapped(){
-        let chatListScreen = ChatListViewController()
+        let chatListScreen = ViewController()
         navigationController?.pushViewController(chatListScreen, animated: true)
     }
     
     // create chat ID by combining sender's and recipient's name
     func createChatID(){
-        guard let currentUserName = currentUser?.displayName, let recipientName = recipientName else {
+        guard let currentUserUid = currentUser?.uid, let recipientUid = recipient?.uid else {
             return
         }
         
-        let currentChatID = [currentUserName, recipientName].sorted()
+        let currentChatID = [currentUserUid, recipientUid].sorted()
         chatID = currentChatID.joined()
     
     }
     
     func getMessages(){
-        // date and time formatter
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .short
-        dateFormatter.timeStyle = .short
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "MM/dd/yy, HH:mm:ss"
+        
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "MM/dd/yy, hh:mm a"
         
         guard let chatID = chatID else {
             print("Chat ID does not exist.")
             return
         }
+
     
         self.database.collection("chats")
             .document(chatID)
@@ -91,7 +93,10 @@ class ChatScreenViewController: UIViewController {
                     self.userMessages.removeAll()
                     for document in documents{
                         do{
-                            let message = try document.data(as: Message.self)
+                            var message = try document.data(as: Message.self)
+                            if let date = inputFormatter.date(from: message.dateAndTime) {
+                                message.dateAndTime = outputFormatter.string(from: date)
+                            }
                             self.userMessages.append(message)
                         }
                         catch{
@@ -115,24 +120,25 @@ class ChatScreenViewController: UIViewController {
         guard let text = chatScreen.textFieldMessage.text else { return  }
         
         let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .short
-        dateFormatter.timeStyle = .short
+        dateFormatter.timeZone = TimeZone.current
+        dateFormatter.dateFormat = "MM/dd/yy, HH:mm:ss"
         let dateAndTime = dateFormatter.string(from: Date())
         
         // get current user's name
         let senderName = currentUser?.displayName ?? "No Name"
         
+        let senderUid = currentUser?.uid ?? "No UID"
+        
         // create message object with sender's name, text and date and time
-        let message = Message(name: senderName, text: text, dateAndTime: dateAndTime)
+        let message = Message(name: senderName, text: text, dateAndTime: dateAndTime, uid: senderUid)
         
         // add to messages collection
         let collectionMessages =
         self.database.collection("chats")
             .document(chatID)
             .collection("messages")
-
-           
         
+
         do{
             try collectionMessages.addDocument(from: message, completion: {(error) in
                 if error == nil{

@@ -39,7 +39,7 @@ class AddChatViewController: UIViewController {
                     } else {
                         self.userList.removeAll()
                         for document in querySnapshot!.documents {
-                            if document.documentID != currentUser.uid {  // 排除当前用户
+                            if document.documentID != currentUser.uid {  
                                 do {
                                     let user = try document.data(as: User.self)
                                     self.userList.append(user)

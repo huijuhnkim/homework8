@@ -10,11 +10,13 @@ struct Message: Codable{
     var name: String
     var text: String
     var dateAndTime: String
+    var uid: String
     
-    init(name: String, text: String, dateAndTime: String){
+    init(name: String, text: String, dateAndTime: String, uid: String){
         self.name = name
         self.text = text
         self.dateAndTime = dateAndTime
+        self.uid = uid
     }
 }
 

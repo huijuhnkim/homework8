@@ -36,15 +36,6 @@ extension RegisterViewController{
                 return
             }
             
-//            Auth.auth().createUser(withEmail: email, password: password, completion: {result, error in
-//                if error == nil{
-//                    self.hideActivityIndicator()
-//                    self.setNameOfTheUserInFirebaseAuth(name: name)
-//                    print("user created")
-//                } else {
-//                    print(error as Any)
-//                }
-//            })
             Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
                 if let error = error {
                     self.displayAlert(title: "Registration Error", message: error.localizedDescription)
@@ -62,6 +53,7 @@ extension RegisterViewController{
         db.collection("users").document(user.uid).setData([
             "name": name,
             "email": email,
+            "uid": user.uid,
         ]) { error in
             if let error = error {
                 self.displayAlert(title: "Firestore Error", message: error.localizedDescription)
@@ -101,19 +93,4 @@ extension RegisterViewController{
         alertController.addAction(okAction)
         self.present(alertController, animated: true, completion: nil)
     }
-    
-    //MARK: We set the name of the user after we create the account...
-//    func setNameOfTheUserInFirebaseAuth(name: String){
-//        let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
-//        changeRequest?.displayName = name
-//        changeRequest?.commitChanges(completion: {(error) in
-//            if error == nil{
-//                //MARK: the profile update is successful...
-//                self.navigationController?.popViewController(animated: true)
-//            }else{
-//                //MARK: there was an error updating the profile...
-//                print("Error occured: \(String(describing: error))")
-//            }
-//        })
-//    }
 }

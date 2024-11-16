@@ -77,21 +77,26 @@ class ViewController: UIViewController {
     }
     
     func showLoginViewController() {
-        //        let addChatController = AddChatViewController()
-        //        addChatController.currentUser = self.currentUser
-        //
-        //        print("start new chat")
-        //
-        //        navigationController?.pushViewController(addChatController, animated: true)
         let loginViewController = LoginViewController()
         navigationController?.pushViewController(loginViewController, animated: true)
     }
     
     func observeChats() {
+        guard let userUid = currentUser?.uid else {
+            print("Current user UID is nil.")
+            return
+        }
+        
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "MM/dd/yy, HH:mm:ss"
+        
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "MM/dd/yy, hh:mm a"
+
         database.collection("users")
-            .document((currentUser?.email)!)
+            .document(userUid)
             .collection("chats")
-            .addSnapshotListener(includeMetadataChanges: false, listener: { [weak self] querySnapshot, error in
+            .addSnapshotListener(includeMetadataChanges: false) { [weak self] querySnapshot, error in
                 guard let self = self else { return }
                 if let error = error {
                     print("Error getting documents: \(error)")
@@ -99,16 +104,54 @@ class ViewController: UIViewController {
                 }
                 self.chatList.removeAll()
                 for document in querySnapshot!.documents {
-                    do {
-                        let chat = try document.data(as: Message.self)
-                        self.chatList.append(chat)
-                    } catch {
-                        print("Error decoding user: \(error)")
+                    if let chatId = document.data()["chatId"] as? String,
+                       let uid = document.data()["uid"] as? String,
+                       let name = document.data()["name"] as? String {
+                        print(chatId)
+                        self.fetchLastMessage(chatId: chatId, uid: uid, name: name)
                     }
                 }
-                self.chatList.sort(by: {$0.dateAndTime < $1.dateAndTime})
-                self.chatListScreen.tableViewChats.reloadData()
-            })
+                DispatchQueue.main.async {
+                    self.chatList.sort(by: { $0.dateAndTime > $1.dateAndTime })
+                    for index in 0..<self.chatList.count {
+                        if let date = inputFormatter.date(from: self.chatList[index].dateAndTime) {
+                            self.chatList[index].dateAndTime = outputFormatter.string(from: date)
+                        }
+                    }
+                    self.chatListScreen.tableViewChats.reloadData()
+                }
+            }
+    }
+    
+    func fetchLastMessage(chatId: String, uid: String, name: String) {
+        database.collection("chats")
+            .document(chatId)
+            .collection("messages")
+            .order(by: "dateAndTime", descending: true)
+            .limit(to: 1)
+            .getDocuments { [weak self] (querySnapshot, error) in
+                guard let self = self else { return }
+                if let error = error {
+                    print("Error getting last message: \(error)")
+                    return
+                }
+                guard let document = querySnapshot?.documents.first else {
+                    print("No messages found.")
+                    return
+                }
+                do {
+                    var lastMessage = try document.data(as: Message.self)
+                    // Update the message with the chat's uid and name
+                    lastMessage.uid = uid
+                    lastMessage.name = name
+                    self.chatList.append(lastMessage)
+                    DispatchQueue.main.async {
+                        self.chatListScreen.tableViewChats.reloadData()
+                    }
+                } catch {
+                    print("Error decoding message: \(error)")
+                }
+            }
     }
     
     override func viewWillDisappear(_ animated: Bool) {

@@ -26,9 +26,6 @@ class RegisterViewController: UIViewController {
     
     @objc func onButtonRegisterTapped() {
         registerNewAccount()
-//        let chatListViewController = ChatListViewController()
-//        navigationController?.pushViewController(chatListViewController, animated: true)
-        
     }
     
 }
