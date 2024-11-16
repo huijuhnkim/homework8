@@ -23,16 +23,19 @@ extension RegisterViewController{
             // input validations
             if name.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty {
                 displayAlert(title: "Empty Fields", message: "There are empty fields. Please fill in all fields.")
+                self.hideActivityIndicator()
                 return
             }
             
             if !isValidEmail(email: email) {
                 displayAlert(title: "Invalid Email", message: "Email should be in proper format.")
+                self.hideActivityIndicator()
                 return
             }
             
             if password != confirmPassword {
                 displayAlert(title: "Password Mismatch", message: "Password does not match.")
+                self.hideActivityIndicator()
                 return
             }
             

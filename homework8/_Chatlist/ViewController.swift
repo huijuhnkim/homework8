@@ -86,44 +86,44 @@ class ViewController: UIViewController {
             print("Current user UID is nil.")
             return
         }
-        
-        let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = "MM/dd/yy, HH:mm:ss"
-        
-        let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = "MM/dd/yy, hh:mm a"
 
         database.collection("users")
             .document(userUid)
             .collection("chats")
-            .addSnapshotListener(includeMetadataChanges: false) { [weak self] querySnapshot, error in
+            .addSnapshotListener { [weak self] querySnapshot, error in
                 guard let self = self else { return }
                 if let error = error {
                     print("Error getting documents: \(error)")
                     return
                 }
                 self.chatList.removeAll()
+                let documentCount = querySnapshot?.documents.count ?? 0
+                var completedCount = 0
                 for document in querySnapshot!.documents {
                     if let chatId = document.data()["chatId"] as? String,
                        let uid = document.data()["uid"] as? String,
                        let name = document.data()["name"] as? String {
-                        print(chatId)
-                        self.fetchLastMessage(chatId: chatId, uid: uid, name: name)
-                    }
-                }
-                DispatchQueue.main.async {
-                    self.chatList.sort(by: { $0.dateAndTime > $1.dateAndTime })
-                    for index in 0..<self.chatList.count {
-                        if let date = inputFormatter.date(from: self.chatList[index].dateAndTime) {
-                            self.chatList[index].dateAndTime = outputFormatter.string(from: date)
+                        self.fetchLastMessage(chatId: chatId, uid: uid, name: name) {
+                            completedCount += 1
+                            if completedCount == documentCount {
+                                DispatchQueue.main.async {
+                                    self.chatList.sort(by: { $0.dateAndTime > $1.dateAndTime })
+                                    self.chatListScreen.tableViewChats.reloadData()
+                                }
+                            }
                         }
                     }
-                    self.chatListScreen.tableViewChats.reloadData()
                 }
             }
     }
-    
-    func fetchLastMessage(chatId: String, uid: String, name: String) {
+
+    func fetchLastMessage(chatId: String, uid: String, name: String, completion: @escaping () -> Void) {
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "MM/dd/yy, HH:mm:ss"
+        
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "MM/dd/yy, hh:mm a"
+        
         database.collection("chats")
             .document(chatId)
             .collection("messages")
@@ -133,23 +133,26 @@ class ViewController: UIViewController {
                 guard let self = self else { return }
                 if let error = error {
                     print("Error getting last message: \(error)")
+                    completion()
                     return
                 }
                 guard let document = querySnapshot?.documents.first else {
                     print("No messages found.")
+                    completion()
                     return
                 }
                 do {
                     var lastMessage = try document.data(as: Message.self)
-                    // Update the message with the chat's uid and name
                     lastMessage.uid = uid
                     lastMessage.name = name
-                    self.chatList.append(lastMessage)
-                    DispatchQueue.main.async {
-                        self.chatListScreen.tableViewChats.reloadData()
+                    if let date = inputFormatter.date(from: lastMessage.dateAndTime) {
+                        lastMessage.dateAndTime = outputFormatter.string(from: date)
                     }
+                    self.chatList.append(lastMessage)
+                    completion()
                 } catch {
                     print("Error decoding message: \(error)")
+                    completion()
                 }
             }
     }

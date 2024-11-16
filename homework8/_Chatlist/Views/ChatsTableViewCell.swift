@@ -74,7 +74,7 @@ class ChatsTableViewCell: UITableViewCell {
             labelName.topAnchor.constraint(equalTo: wrapperCellView.topAnchor, constant: 8),
             labelName.leadingAnchor.constraint(equalTo: wrapperCellView.leadingAnchor, constant: 16),
             labelName.heightAnchor.constraint(equalToConstant: 20),
-            labelName.trailingAnchor.constraint(equalTo: wrapperCellView.trailingAnchor, constant: -130),
+            labelName.trailingAnchor.constraint(equalTo: wrapperCellView.trailingAnchor, constant: -145),
             
             labelText.topAnchor.constraint(equalTo: labelName.bottomAnchor, constant: 2),
             labelText.leadingAnchor.constraint(equalTo: labelName.leadingAnchor),
@@ -82,7 +82,7 @@ class ChatsTableViewCell: UITableViewCell {
             labelText.widthAnchor.constraint(lessThanOrEqualTo: labelName.widthAnchor),
             
             labelTime.topAnchor.constraint(equalTo: wrapperCellView.topAnchor, constant: 8),
-            labelTime.leadingAnchor.constraint(equalTo: wrapperCellView.trailingAnchor, constant: -130),
+            labelTime.leadingAnchor.constraint(equalTo: wrapperCellView.trailingAnchor, constant: -145),
             labelTime.heightAnchor.constraint(equalToConstant: 20),
             labelTime.trailingAnchor.constraint(equalTo: wrapperCellView.trailingAnchor, constant: -8),
             
